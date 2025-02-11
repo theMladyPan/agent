@@ -16,9 +16,12 @@ import dotenv
 import logging
 import requests
 import os
+import time
 
 log = logging.getLogger("uvicorn")
 logging.basicConfig(level=logging.INFO)
+log_oai = logging.getLogger("openai")
+log_oai.setLevel(logging.DEBUG)
 dotenv.load_dotenv()
 
 # Initialize FastAPI
@@ -124,9 +127,12 @@ async def home():
 
 @app.post("/chat", response_model=Response)
 async def chat(query: Query):
+    tstart = time.time()
     try:
-        # response = await agent_executor.ainvoke({"input": query})
-        response = agent_executor.invoke({"input": query})
+        response = await agent_executor.ainvoke({"input": query})
+        # response = agent_executor.invoke({"input": query})
+        tend = time.time()
+        log.info(f"Took: {tend-tstart} seconds")
         return Response(response=response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
