@@ -3,3 +3,5 @@ venv/
 .history
 .env
 __pycache__
+mlruns/
+data.txt
